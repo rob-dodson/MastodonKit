@@ -29,8 +29,8 @@ public class Filter: Codable {
     /// Should the filter consider word boundaries?
     public let wholeWord: Bool
 
-    public enum Context: Codable, RawRepresentable {
-		public typealias RawValue = String
+    public enum Context: Codable, RawRepresentable, Equatable {
+        public typealias RawValue = String
 
         /// home timeline
         case home
