@@ -18,7 +18,7 @@ public class Filter: Codable {
     public let phrase: String
 
     /// The contexts in which the filter should be applied.
-    public let context: Context
+    public let context: [Context]
 
     /// When the filter should no longer be applied.
     public let expiresAt: Date?
@@ -29,15 +29,60 @@ public class Filter: Codable {
     /// Should the filter consider word boundaries?
     public let wholeWord: Bool
 
-    public enum Context: String, Codable {
+    public enum Context: Codable, RawRepresentable {
+		public typealias RawValue = String
+
         /// home timeline
         case home
         /// notifications timeline
-        case notification
+        case notifications
         /// public timelines
         case `public`
         /// expanded thread of a detailed status
         case thread
+        /// profiles
+        case account
+
+        case unknown(String)
+
+        public var rawValue: String {
+            switch self {
+            case .account: return "account"
+            case .home: return "home"
+            case .notifications: return "notifications"
+            case .public: return "public"
+            case .thread: return "thread"
+            case .unknown(let context): return context
+            }
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let rawValue = try container.decode(String.self)
+            self.init(rawValue: rawValue)!
+        }
+
+        public init?(rawValue: String) {
+            switch rawValue {
+            case "home":
+                self = .home
+            case "notifications":
+                self = .notifications
+            case "public":
+                self = .public
+            case "thread":
+                self = .thread
+            case "account":
+                self = .account
+            default:
+                self = .unknown(rawValue)
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(rawValue)
+        }
     }
 
     enum CodingKeys: String, CodingKey {
