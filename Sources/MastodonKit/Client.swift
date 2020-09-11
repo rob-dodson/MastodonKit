@@ -12,6 +12,7 @@ public class Client: ClientType {
 
     private let session: URLSession
     private var retryQueue: OperationQueue?
+    private let observers = ClientObserverList()
 
     public let baseURL: String
     public weak var delegate: ClientDelegate?
@@ -142,6 +143,18 @@ public class Client: ClientType {
         fetchPage(pagination: Pagination(next: nil, previous: nil))
     }
 
+    // MARK: - Observer Maintenance
+
+    public func addObserver(_ observer: ClientObserver) {
+        observers.addObserver(observer)
+    }
+
+    public func removeObserver(_ observer: ClientObserver) {
+        observers.removeObserver(observer)
+    }
+
+    // MARK: - Private Methods
+
     private func scheduleRequestForRetry<Model>(_ request: Request<Model>,
                                                 future: FutureTask,
                                                 completion: @escaping (Result<Model>) -> Void) {
@@ -164,8 +177,13 @@ public class Client: ClientType {
 
     private func accessTokenDidChange() {
 
-        if accessToken != nil, let queue = retryQueue, queue.operationCount > 0 {
-            queue.isSuspended = false
+        if let accessToken = accessToken {
+
+            observers.allObservers.forEach({ $0.client(self, didUpdate: accessToken) })
+
+            if let queue = retryQueue, queue.operationCount > 0 {
+                queue.isSuspended = false
+            }
         }
     }
 }

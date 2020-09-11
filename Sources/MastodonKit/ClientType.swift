@@ -47,6 +47,18 @@ public protocol ClientType {
     ///   - result: The request result.
     func runAndAggregateAllPages<Model: Codable>(requestProvider: @escaping (Pagination) -> Request<[Model]>,
                                                  completion: @escaping (Result<[Model]>) -> Void)
+
+    /// Adds a new observer to the receiver. The receiver keeps a weak reference to the observer, and thus calling
+    /// `removeObserver(_:)` is not required if the observer is going to be released.
+    ///
+    /// - Parameter observer: The new observer
+    func addObserver(_ observer: ClientObserver)
+
+    /// Removes the given observer from the set of observers the receiver references. If the given object is not
+    /// registered as an observer, this method does nothing.
+    ///
+    /// - Parameter observer: The observer to be removed.
+    func removeObserver(_ observer: ClientObserver)
 }
 
 public extension ClientType {
@@ -60,4 +72,14 @@ public extension ClientType {
     func run<Model>(_ request: Request<Model>, completion: @escaping (_ result: Result<Model>) -> Void) {
         run(request, resumeImmediately: true, completion: completion)
     }
+}
+
+public protocol ClientObserver: AnyObject {
+
+    /// Invoked when the client that the receiver observes is given a new `accessToken`.
+    ///
+    /// - Parameters:
+    ///   - client: The client that had its `accessToken` changed.
+    ///   - accessToken: The new `accessToken`.
+    func client(_ client: ClientType, didUpdate accessToken: String)
 }
