@@ -49,7 +49,7 @@ public enum FilterRequests {
     ///   - wholeWord: Whether to consider word boundaries when matching
     ///   - expiresIn: Filter will expire after this amount of seconds. Leave blank for no expiration.
     /// - Returns: Request for `Filter`.
-    public static func create(id: String,
+    public static func update(id: String,
                               phrase: String,
                               context: [Filter.Context],
                               irreversible: Bool? = nil,
@@ -83,13 +83,16 @@ public enum FilterRequests {
                                        irreversible: Bool? = nil,
                                        wholeWord: Bool? = nil,
                                        expiresIn: Date? = nil) -> Payload {
-        let parameters = [
+        var parameters = [
             Parameter(name: "phrase", value: phrase),
-            Parameter(name: "context", value: context.map { $0.rawValue }.joined(separator: ",")),
             Parameter(name: "irreversible", value: irreversible.flatMap(trueOrNil)),
             Parameter(name: "wholeWord", value: wholeWord.flatMap(trueOrNil)),
-            Parameter(name: "expiresIn", value: expiresIn.map { "\(Int($0.timeIntervalSinceNow))" })
+            Parameter(name: "expires_in", value: expiresIn.map { "\(Int($0.timeIntervalSinceNow))" })
         ]
+
+        for contextEntry in context {
+            parameters.append(Parameter(name: "context[]", value: contextEntry.rawValue))
+        }
 
         return .parameters(parameters)
     }
