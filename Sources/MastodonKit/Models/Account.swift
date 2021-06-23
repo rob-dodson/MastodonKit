@@ -22,13 +22,13 @@ public class Account: Codable {
     /// URL of the user's profile page (can be remote).
     public let url: URL
     /// URL to the avatar image.
-    public let avatar: URL
+    public let avatar: String?
     /// URL to the avatar static image
-    public let avatarStatic: URL
+    public let avatarStatic: String?
     /// URL to the header image.
-    public let header: URL
+    public let header: String?
     /// URL to the header static image
-    public let headerStatic: URL
+    public let headerStatic: String?
     /// Boolean for when the account cannot be followed without waiting for approval first.
     public let locked: Bool
     /// The time the account was created.
@@ -88,5 +88,21 @@ public class Account: Codable {
         public let note: String?
         /// Unformatted metadata fields in the user's profile, if any.
         public let fields: [VerifiableMetadataField]?
+    }
+
+    public var avatarURL: URL? {
+        return avatar.flatMap(URL.init(string:))
+    }
+
+    public var avatarStaticURL: URL? {
+        return avatarStatic.flatMap(URL.init(string:))
+    }
+
+    public var headerURL: URL? {
+        return header.flatMap(URL.init(string:))
+    }
+
+    public var headerStaticURL: URL? {
+        return headerStatic.flatMap(URL.init(string:))
     }
 }
