@@ -53,6 +53,8 @@ public class Status: Codable {
     public let language: String?
     /// The reblogged Status
     public let reblog: Status?
+	/// Whether this status is bookmarked
+    public let bookmarked : Bool?
     /// Whether this is the pinned status for the account that posted it.
     public private(set) var pinned: Bool?
     /// A content card with linked content.
@@ -83,6 +85,7 @@ public class Status: Codable {
         case application
         case language
         case reblog
+		case bookmarked
         case pinned
         case card
         case poll

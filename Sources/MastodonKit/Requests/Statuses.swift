@@ -162,4 +162,21 @@ public enum Statuses {
     public static func unmute(id: String) -> Request<Status> {
         return Request<Status>(path: "/api/v1/statuses/\(id)/unmute", method: .post(.empty))
     }
+
+    /// Bookmark a status.
+    ///
+    /// - Parameter id: The status id.
+    /// - Returns: Request for `Status`.
+    public static func bookmark(id: String) -> Request<Status> {
+        return Request<Status>(path: "/api/v1/statuses/\(id)/bookmark", method: .post(.empty))
+    }
+
+    /// Unbookmark a status.
+    ///
+    /// - Parameter id: The status id.
+    /// - Returns: Request for `Status`.
+    public static func unbookmark(id: String) -> Request<Status> {
+        return Request<Status>(path: "/api/v1/statuses/\(id)/unbookmark", method: .post(.empty))
+    }
+
 }
