@@ -98,6 +98,10 @@ public class Client: ClientType {
                 completion(.success(try Model.decode(data: data), httpResponse.pagination))
             } catch let parseError {
                 #if DEBUG
+                if let json = try? JSONSerialization.jsonObject(with: data, options: [])
+                {
+                    print(json)
+                }
                 NSLog("Parse error: \(parseError)")
                 #endif
                 completion(.failure(ClientError.invalidModel))

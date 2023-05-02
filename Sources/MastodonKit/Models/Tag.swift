@@ -15,6 +15,8 @@ public class Tag: Codable {
     public let url: URL
     /// A log of statistics for this specific tag for previous days.
     public let history: [TagStatistics]?
+    /// is user following this tag?
+    public let following: Bool?
 }
 
 public class TagStatistics: Codable {
